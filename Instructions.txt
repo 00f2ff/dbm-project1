@@ -24,7 +24,7 @@ For example, say we assign all of our data to the 'data' variable. If we want to
 
 data.Weekend[0][0]
 
-If we were to type data.Weekend[0][1], we would get an array of data about this particular activity. I formatted it as follows:
+If we were to type data.Weekend[0][1], we would get an array of data about this particular activity, where values are percent engaged. I formatted it as follows:
 
 [
 	['2006': value],
@@ -38,5 +38,35 @@ If we were to type data.Weekend[0][1], we would get an array of data about this 
 ]
 
 This should make it easier to create charts from the data. The x-value will be at the [0] index of the array, and the y-value will be at the [1] index of the array.
+
+
+Note: Education data is formatted differently from the other activities.
+It contains both percent engaged and hourly data, which means that instead of the format above, it instead looks like this:
+
+[
+	[
+		['2006': value],
+		['2007': value],
+		['2008': value],
+		['2009': value],
+		['2010': value],
+		['2011': value],
+		['2012': value],
+		['2013': value]
+	],
+	[
+		['2006': value],
+		['2007': value],
+		['2008': value],
+		['2009': value],
+		['2010': value],
+		['2011': value],
+		['2012': value],
+		['2013': value]
+	]
+]
+
+In this case, data.Weekend[10][1][0] would return an array of percent engaged, and data.Weekend[10][1][1] would return an array of hours per weekend.
+
 
 Hope this helps!
