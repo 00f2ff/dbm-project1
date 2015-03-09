@@ -1,0 +1,42 @@
+I updated the data structure which contains all of the information for different activities from years 2006 - 2013.
+
+The main structure is a dictionary with two keys: Weekend and Weekday
+Each key has a value of an array of activities. 
+The index of each activity is as follows (although you can always check the activity name in the array):
+
+0: personal activities
+1: health-related self-care
+2: watching tv
+3: animals and pets
+4: travel related to household activities
+5: food preparation
+6: grocery shopping
+7: financial services and banking
+8: organizational, civic. and religious activities
+9: religious and spiritual activities
+10: educational activities
+11: working and work-related activities
+12: job search and interviewing
+13: travel related to work
+
+Each activity is of the format, [activity name, [data]]
+For example, say we assign all of our data to the 'data' variable. If we want to get the string "Personal Activities" for the weekend, we would type in JavaScript: 
+
+data.Weekend[0][0]
+
+If we were to type data.Weekend[0][1], we would get an array of data about this particular activity. I formatted it as follows:
+
+[
+	['2006': value],
+	['2007': value],
+	['2008': value],
+	['2009': value],
+	['2010': value],
+	['2011': value],
+	['2012': value],
+	['2013': value]
+]
+
+This should make it easier to create charts from the data. The x-value will be at the [0] index of the array, and the y-value will be at the [1] index of the array.
+
+Hope this helps!

@@ -71,8 +71,8 @@ data.forEach(function(sub_data) {
 
   var yRange = d3.scale.linear()
     .range([height - margins.top, margins.bottom])
-    .domain([0, 12]); // for hours
-    // .domain([0,100]); // for percents
+    // .domain([0, 12]); // for hours
+    .domain([0,100]); // for percents
 
   var xAxis = d3.svg.axis()
     .scale(xRange)

@@ -51,34 +51,65 @@ class MainHandler(BaseHandler):
 		# f = open('data/four_years.json')
 		# data = json.load(f)
 		data = self.data_passer()
-		logging.info(data)
+		# logging.info(data)
 		context = {'data':data}
 		self.render_response('index.html', **context)
 
-	def data_passer(self): # decides which data to pass to client
+	def data_passer(self):
 		# create data object containing all year information
-		data = {"2007":[],"2008":[],"2009":[],"2010":[]}
-		for year in data:
-			data[year] = self.get_year_data(year)
-		years = ["2007","2008","2009","2010"]
-		passing = []
-		num_activities = len(data["2007"]) # arbitrary year
-		for i in xrange(num_activities):
-			passing.append(self.get_data_for_activity(data,i,years,
-				"Average Hours per Weekend and Holiday",True))
-		return passing
+		# data = {"2006":[],"2007":[],"2008":[],"2009":[],"2010":[],"2011":[],"2012":[],"2013":[]}
+		data = [ ["2006",[]], ["2007",[]], ["2008",[]], ["2009",[]], ["2010",[]], ["2011",[]], ["2012",[]], ["2013",[]] ]
+		for y in xrange(len(data)):
+			# array with year = data for that year
+			data[y][1] = self.get_year_data(data[y][0]) 
+		# Convert into new data structure
+		data = self.regenerate_data(data)
+		logging.info(data)
 
+		return data
 
-	# Returns [activity, [value per year]]
-	def get_data_for_activity(self,data,index,years,key,sub_activity):
-		# TODO: figure out how to recurse through this
-		d = []
-		for year in years:
-			info = {}
-			info["year"] = year
-			info["value"] = data[year][index][key]
-			d.append(info)
-		return [data[years[0]][index]["Activity"], d]
+	def regenerate_data(self,data):
+		# initialize
+		weekend = self.add_activities("Weekend")
+		weekday = self.add_activities("Weekday")
+		#new = [weekend, weekday]
+		# iterate through years
+		for y in xrange(len(data)):
+			# iterate through activities array (same for both weekend and weekday)
+			for a in xrange(len(weekend)):
+				# check if education (special case)
+				if weekend[a][0] == "Educational Activities":
+					# create arrays of all of the education data (see comment below)
+					we = []
+					wd = []
+					we.append([data[y][0], data[y][1][a]["Percent Engaged on Weekends and Holidays"]])
+					we.append([data[y][0], data[y][1][a]["Average Hours per Weekend and Holiday"]])
+					wd.append([data[y][0], data[y][1][a]["Percent Engaged on Weekdays"]])
+					wd.append([data[y][0], data[y][1][a]["Average Hours per Weekday"]])
+					weekend[a][1].append(we)
+					weekday[a][1].append(wd)
+				else:
+					# array for the activity for the weekend = [year, engagement value for that activity]
+					weekend[a][1].append([data[y][0], data[y][1][a]["Percent Engaged on Weekends and Holidays"]])
+					# do same for weekday
+					weekday[a][1].append([data[y][0], data[y][1][a]["Percent Engaged on Weekdays"]])
+		return {"Weekend":weekend, "Weekday":weekday}
+
+	# Takes a name, e.g. weekend or weekday, and creates a dictionary with all important activites in it
+	def add_activities(self,name):
+		# d = {name: [{"Personal Activities": []}, {"Health-Related Self Care": []}, {"Watching TV": []}, 
+		# {"Animals and Pets": []}, {"Travel Related to Household Activities": []}, {"Food Preparation": []},
+		# {"Grocery Shopping": []}, {"Financial Services and Banking": []}, {"Organizational, Civic and Religious Activites": []},
+		# {"Religious and Spiritual Activities": []}, {"Educational Activities": []}, {"Working and Work-Related Activities": []},
+		# {"Job Search and Interviewing": []}, {"Travel Related to Work": []}]}
+		d = [["Personal Activities",[]], ["Health-Related Self Care", []], ["Watching TV", []], 
+		["Animals and Pets", []], ["Travel Related to Household Activities", []], ["Food Preparation", []],
+		["Grocery Shopping", []], ["Financial Services and Banking", []], ["Organizational, Civic and Religious Activites", []],
+		["Religious and Spiritual Activities", []], ["Educational Activities", []], ["Working and Work-Related Activities", []],
+		["Job Search and Interviewing", []], ["Travel Related to Work", []]]
+		# Format: each index corresponds with the index data is accessed in get_year_data
+		return d
+
 
 	def get_year_data(self,year): 
 		# Note: '#' char in csv strings is a stand-in for a comma
@@ -92,99 +123,28 @@ class MainHandler(BaseHandler):
 		for row in reader:
 			j.append(row)
 		k = []
-		# Personal care activities
-		act = j[0]
-		act["Sub-Activities"] = j[1:6]
-		k.append(act)
-		# Eating and drinking
-		act = j[6]
-		act["Sub-Activities"] = j[7:9]
-		k.append(act)
-		# Household activities
-		act = j[9]
-		act["Sub-Activities"] = j[10:20]
-		k.append(act)
-		# Purchasing goods and services
-		act = j[20]
-		act["Sub-Activities"] = []
-		# Consumer goods purchases
-		s_act = j[21]
-		s_act["Sub-Activities"] = j[22]
-		act["Sub-Activities"].append(s_act)
-		# Professional and personal care services
-		s_act = j[23]
-		s_act["Sub-Activities"] = j[24:27]
-		act["Sub-Activities"].append(s_act)
-		# Household services
-		s_act = j[27]
-		s_act["Sub-Activities"] = j[28:30]
-		act["Sub-Activities"].append(s_act)
-		act["Sub-Activities"].append(j[30])
-		act["Sub-Activities"].append(j[31])
-		k.append(act)
-		# Caring for and helping others
-		act = j[32]
-		act["Sub-Activities"] = []
-		s_act = j[33]
-		s_act["Sub-Activities"] = j[34:37]
-		act["Sub-Activities"].append(s_act)
-		s_act = j[37]
-		s_act["Sub-Activities"] = j[38:40]
-		act["Sub-Activities"].append(s_act)
-		act["Sub-Activities"].append(j[40])
-		act["Sub-Activities"].append(j[41])
-		s_act = j[42]
-		s_act["Sub-Activities"] = [j[43:45]]
-		act["Sub-Activities"].append(s_act)
-		act["Sub-Activities"].append(j[45])
-		k.append(act)
-		# Work and work-related activities
-		act = j[46]
-		act["Sub-Activities"] = j[47:52]
-		k.append(act)
-		# Educational activities
-		act = j[52]
-		act["Sub-Activities"] = j[53:56]
-		k.append(act)
-		# Organizational, civic, and religious activities
-		act = j[56]
-		act["Sub-Activities"] = [j[57]]
-		s_act = j[58]
-		s_act["Sub-Activities"] = []
-		s_s_act = j[59]
-		s_s_act["Sub-Activities"] = j[60:65]
-		s_act["Sub-Activities"].append(s_s_act)
-		s_act["Sub-Activities"].append(j[65])
-		act["Sub-Activities"].append(s_act)
-		act["Sub-Activities"].append(j[66])
-		k.append(act)
-		# Leisure and sports
-		act = j[67]
-		act["Sub-Activities"] = []
-		s_act = j[68]
-		s_s_act = j[69]
-		s_s_act["Sub-Activities"] = j[70:72]
-		s_act["Sub-Activities"] = [s_s_act]
-		s_s_act = j[72]
-		s_s_act["Sub-Activities"] = [j[73]]
-		s_act["Sub-Activities"].append(s_s_act)
-		s_act["Sub-Activities"].append(j[74])
-		act["Sub-Activities"].append(s_act)
-		s_act = j[75]
-		s_act["Sub-Activities"] = j[76:78]
-		act["Sub-Activities"].append(s_act)
-		act["Sub-Activities"].append(j[78])
-		k.append(act)
-		# Telephone calls, mail, and emails
-		act = j[79]
-		act["Sub-Activities"] = [j[80]]
-		s_act = j[81]
-		s_act["Sub-Activities"] = j[82:84]
-		act["Sub-Activities"].append(s_act)
-		act["Sub-Activities"].append(j[84])
-		k.append(act)
-		# Other activities, not elsewhere classified
-		k.append(j[85])
+		# Personal Activities
+		k.append(j[4])
+		k.append(j[3])
+		# Leisure
+		k.append(j[73])
+		# Home Making
+		k.append(j[16])
+		k.append(j[19])
+		k.append(j[11])
+		k.append(j[22])
+		# Finances
+		k.append(j[24])
+		# Religion
+		k.append(j[56])
+		k.append(j[57])
+		# Education
+		k.append(j[52])
+		# Work
+		k.append(j[46])
+		k.append(j[50])
+		k.append(j[51])
+		# logging.info(k)
 		return k
 
 	def post(self):

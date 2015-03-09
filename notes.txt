@@ -1,0 +1,62 @@
+I think the best way to extract information (for the team to process) is:
+
+1) Rewrite the reader function to only extract the data we want (weekends and weekdays)
+2) Iterate through the years and pull out only this data, and create a data structure of format:
+	d = [
+		{
+		year1: [
+			{activity: value}
+			],...
+		},
+		{
+		year2: ...
+		}
+	]
+3) Iterate through the data structure somehow (still undecided) and rearrange data to fit the format:
+	d = [
+		{
+		weekend: [
+				{
+				activity1: [
+					[year1,value],
+					[year2,value],...
+				]
+				}
+			]
+		}
+		weekday: [...]
+	]
+4) Pass that new data structure to the browser. 
+5) Write a .txt file that explains how to access this data structure
+6) Upload to Github and send team link
+
+Interesting trends: (percent engaged)
+
+Personal Activities
+	personal activities
+	health-related self-care
+
+Leisure
+	watching tv
+
+Household Work
+	animals and pets
+	travel related to household activities
+	food preparation
+	grocery shopping
+
+Finances
+	financial services and banking
+
+Religion
+	organizational, civic. and religious activities
+	religious and spiritual activities
+
+Education
+	educational activities
+		Include all hours and all engagement
+
+Work
+	working and work-related activities
+	job search and interviewing
+	travel related to work

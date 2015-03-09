@@ -10,3 +10,15 @@ Percent Engaged on Weekends and Holidays
 
 
 Just because something isn't exciting at a high level doesn't mean individual elements won't be
+
+
+
+
+
+
+
+To Do: focus on percentages
+
+0. Change years 2011-2013 into compatible CSVs
+1. Find interesting information (use datapoints in addition to lines)
+2. Recurse
