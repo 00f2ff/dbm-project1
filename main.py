@@ -80,14 +80,19 @@ class MainHandler(BaseHandler):
 				# check if education (special case)
 				if weekend[a][0] == "Educational Activities":
 					# create arrays of all of the education data (see comment below)
-					we = []
-					wd = []
-					we.append([data[y][0], data[y][1][a]["Percent Engaged on Weekends and Holidays"]])
-					we.append([data[y][0], data[y][1][a]["Average Hours per Weekend and Holiday"]])
-					wd.append([data[y][0], data[y][1][a]["Percent Engaged on Weekdays"]])
-					wd.append([data[y][0], data[y][1][a]["Average Hours per Weekday"]])
-					weekend[a][1].append(we)
-					weekday[a][1].append(wd)
+					# education of [a][1] is an array of [ [], [] ], with percent being index 0 and hours 1
+					weekend[a][1][0].append([data[y][0], data[y][1][a]["Percent Engaged on Weekends and Holidays"]])
+					weekend[a][1][1].append([data[y][0], data[y][1][a]["Average Hours per Weekend and Holiday"]])
+					weekday[a][1][0].append([data[y][0], data[y][1][a]["Percent Engaged on Weekdays"]])
+					weekday[a][1][1].append([data[y][0], data[y][1][a]["Average Hours per Weekday"]])
+					# we = []
+					# wd = []
+					# we.append([data[y][0], data[y][1][a]["Percent Engaged on Weekends and Holidays"]])
+					# we.append([data[y][0], data[y][1][a]["Average Hours per Weekend and Holiday"]])
+					# wd.append([data[y][0], data[y][1][a]["Percent Engaged on Weekdays"]])
+					# wd.append([data[y][0], data[y][1][a]["Average Hours per Weekday"]])
+					# weekend[a][1].append(we)
+					# weekday[a][1].append(wd)
 				else:
 					# array for the activity for the weekend = [year, engagement value for that activity]
 					weekend[a][1].append([data[y][0], data[y][1][a]["Percent Engaged on Weekends and Holidays"]])
@@ -95,7 +100,7 @@ class MainHandler(BaseHandler):
 					weekday[a][1].append([data[y][0], data[y][1][a]["Percent Engaged on Weekdays"]])
 		return {"Weekend":weekend, "Weekday":weekday}
 
-	# Takes a name, e.g. weekend or weekday, and creates a dictionary with all important activites in it
+	# Takes a name, e.g. weekend or weekday, and creates an array with all important activites in it
 	def add_activities(self,name):
 		# d = {name: [{"Personal Activities": []}, {"Health-Related Self Care": []}, {"Watching TV": []}, 
 		# {"Animals and Pets": []}, {"Travel Related to Household Activities": []}, {"Food Preparation": []},
@@ -105,7 +110,7 @@ class MainHandler(BaseHandler):
 		d = [["Personal Activities",[]], ["Health-Related Self Care", []], ["Watching TV", []], 
 		["Animals and Pets", []], ["Travel Related to Household Activities", []], ["Food Preparation", []],
 		["Grocery Shopping", []], ["Financial Services and Banking", []], ["Organizational, Civic and Religious Activites", []],
-		["Religious and Spiritual Activities", []], ["Educational Activities", []], ["Working and Work-Related Activities", []],
+		["Religious and Spiritual Activities", []], ["Educational Activities", [ [], [] ]], ["Working and Work-Related Activities", []],
 		["Job Search and Interviewing", []], ["Travel Related to Work", []]]
 		# Format: each index corresponds with the index data is accessed in get_year_data
 		return d
