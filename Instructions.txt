@@ -27,17 +27,17 @@ data.Weekend[0][0]
 If we were to type data.Weekend[0][1], we would get an array of data about this particular activity, where values are percent engaged. I formatted it as follows:
 
 [
-	['2006': value],
-	['2007': value],
-	['2008': value],
-	['2009': value],
-	['2010': value],
-	['2011': value],
-	['2012': value],
-	['2013': value]
+	{"year":"2006", "percent":value},
+	{"year":"2007", "percent":value},
+	{"year":"2008", "percent":value},
+	{"year":"2009", "percent":value},
+	{"year":"2010", "percent":value},
+	{"year":"2011", "percent":value},
+	{"year":"2012", "percent":value},
+	{"year":"2013", "percent":value}
 ]
 
-This should make it easier to create charts from the data. The x-value will be at the [0] index of the array, and the y-value will be at the [1] index of the array.
+This should make it easier to create charts from the data. If this dataset is called "d" by D3 (the default), then to get the x-value we would type d.year, and to get the y-value we would type d.percent
 
 
 Note: Education data is formatted differently from the other activities.
@@ -45,24 +45,24 @@ It contains both percent engaged and hourly data, which means that instead of th
 
 [
 	[
-		['2006': value],
-		['2007': value],
-		['2008': value],
-		['2009': value],
-		['2010': value],
-		['2011': value],
-		['2012': value],
-		['2013': value]
+		{"year":"2006", "percent":value},
+		{"year":"2007", "percent":value},
+		{"year":"2008", "percent":value},
+		{"year":"2009", "percent":value},
+		{"year":"2010", "percent":value},
+		{"year":"2011", "percent":value},
+		{"year":"2012", "percent":value},
+		{"year":"2013", "percent":value}
 	],
 	[
-		['2006': value],
-		['2007': value],
-		['2008': value],
-		['2009': value],
-		['2010': value],
-		['2011': value],
-		['2012': value],
-		['2013': value]
+		{"year":"2006", "hours":value},
+		{"year":"2007", "hours":value},
+		{"year":"2008", "hours":value},
+		{"year":"2009", "hours":value},
+		{"year":"2010", "hours":value},
+		{"year":"2011", "hours":value},
+		{"year":"2012", "hours":value},
+		{"year":"2013", "hours":value}
 	]
 ]
 

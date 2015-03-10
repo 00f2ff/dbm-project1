@@ -1,0 +1,52 @@
+html, body {
+	width: 100%;
+	height: 100%;
+}
+
+body {
+	margin: 0;
+	font-family: 'Roboto', sans-serif;
+}
+
+#container {
+	margin: 0 auto;
+	text-align: center;
+	width: 80%;
+}
+
+#members {
+	font-size: 1.1em;
+}
+
+#graph-container {
+	/*margin-top: 2%;*/
+	
+}
+
+#graph-nav {
+	margin: 2% auto;
+}
+
+/*table {
+	margin: 2% auto;
+}
+
+.label {
+	padding-right: 2%;
+}*/
+
+.graph-input {
+	/*float: left;*/
+	padding: 15px;
+	background-color: rgba(182,182,182,0.3);
+	border: 2px solid #B6B6B6; /*background-color: rgba(182,182,182,1);*/
+	margin-left: 2px;
+}
+
+.selected {
+	background-color: rgba(182,182,182,1);
+}
+
+.graph-input:hover {
+	background-color: rgba(182,182,182,1);
+}
