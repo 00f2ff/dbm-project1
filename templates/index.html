@@ -8,54 +8,31 @@
 <body>
 <div id="container">
   <h2>The Recession's Effect On Americans' Activity Engagement</h2>
-  <div id="members">Duncan McIsaac, Luo Lorraine, Jina Lee and Mo Zhang</div> <!-- Are these the names people want on the project? -->
+  <div id="members">Duncan McIsaac, Yinting Luo, Jina Lee and Mo Zhang</div> <!-- Are these the names people want on the project? -->
   <p>This project analyzes how Americans altered their schedules and behavior during The Great Recession. We used the <a target="_blank" href="https://catalog.data.gov/dataset/american-time-use-survey-54e68">American Time Use Survey</a> (ATUS) as our data source. The American Time Use Survey conducted over 148,000 interviews between 2003 and 2013 to keep track of how much time Americans fifteen years of age and older dedicated to a myriad of different activities. Click <a target="_blank" href="http://www.bls.gov/tus/atussummary.pdf">here</a> to read more about ATUS. </p>
   <span>Use the navigation below to explore our significant findings.</span>
   <div id="graph-container">
     <div id="graph-nav">
-      <!-- <form>
-        <table>
-          <tr>
-            <td><input id="personal-activities" type="radio" value="0,1"></td>
-            <td class="label"><label>Personal Activities</label></td>
-
-            <td><input id="leisure" type="radio" value="2"></td>
-            <td class="label"><label>Leisure</label></td>
-
-            <td><input id="household-work" type="radio" value="3,4,5,6"></td>
-            <td class="label"><label>Household Work</label></td>
-
-            <td><input id="finances" type="radio" value="7"></td>
-            <td class="label"><label>Finances</label></td>
-
-            <td><input id="religion" type="radio" value="8,9"></td>
-            <td class="label"><label>Religion</label></td>
-
-            <td><input id="education" type="radio" value="10"></td>
-            <td class="label"><label>Education</label></td>
-
-            <td><input id="work" type="radio" value="11,12,13"></td>
-            <td class="label"><label>Work</label></td>
-          </tr>
-        </table>
-      </form> -->
-      <!-- JS: .click will analyze the data-index of $(this), split it on , and turn it into numbers, and call graphing function accordingly.
-           It could also take $(this).html() for the chart title -->
-      <div class="graph-input" data-index="0,1">Personal Activities</div>
+      <!-- JS: .click will analyze the data-index of $(this), split it on , and turn it into numbers, and call graphing function accordingly. It could also take $(this).html() for the chart title -->
+      <div class="graph-input selected" data-index="0,1">Personal Activities</div>
       <div class="graph-input" data-index="2">Leisure</div>
       <div class="graph-input" data-index="3,4,5,6">Household Work</div>
       <div class="graph-input" data-index="7">Finances</div>
-      <div class="graph-input" data-index="8,9">Religion</div>
+      <div class="graph-input" data-index="8,9">Community</div>
       <div class="graph-input" data-index="10">Education</div>
       <div class="graph-input" data-index="11,12,13">Work</div>
-      <!-- Tuesday: Turn this into a flexbox. I think I can spread the divs out evenly if they are in that format. -->
-
-
-
     </div>
     <div id="graph"></div>
   </div>
-  <div id="analysis"></div>
+  <div id="analysis-box">
+    <!-- <div class="analysis" data-activity="Personal Activities">This is about personal activities</div>
+    <div class="analysis" data-activity="Leisure">This is about leisure</div>
+    <div class="analysis" data-activity="Household Work">This is about household work</div>
+    <div class="analysis" data-activity="Finances">This is about finances</div>
+    <div class="analysis" data-activity="Community">This is about community</div>
+    <div class="analysis" data-activity="Education">This is about education</div>
+    <div class="analysis" data-activity="Work">This is about work</div> -->
+  </div>
 
 </div>
 
@@ -64,7 +41,200 @@
 <script type="text/javascript" src="d3/d3.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script>
-var data = {{data|safe}}
+var data, analyses;
+
+data = {{data|safe}}
+analyses = {
+  "Personal Activities": "This is about personal activities",
+  "Leisure": "This is about leisure",
+  "Household Work": "This is about household work",
+  "Finances": "This is about finances",
+  "Community": "This is about community",
+  "Education": "This is about education",
+  "Work": "This is about work"
+}
+// Add default analysis text
+$('#analysis-box').html(analyses["Personal Activities"]);
+
+$('.graph-input').click(function() {
+  // reset all elements and set this one to selected
+  $('.graph-input').removeClass('selected');
+  $(this).addClass('selected');
+  var indexes = $(this).attr('data-index').split(','); // Convert to int later
+
+  // set analysis text to correct category
+  var category = $(this).html();
+  $('#analysis-box').html(analyses[category]);
+
+  // call graphing function on this data
+  $('#graph').html('');
+  drawActivities(category, indexes);
+
+});
+// drawActivities("Household Work",["3","4","5","6"]);
+drawActivities("Personal Activities",["0","1"]);
+function drawActivities(category, indexes) {
+  var yRange, width, height, margins, graph, years, xScale, yScale, xAxis, yAxis, createLine, colors, activityData;
+  // define the yRange for the selected category
+  if (category === "Personal Activities") {
+    yRange = [0,10];
+  }
+  else if (category === "Leisure") {
+    yRange = [0,90];
+  }
+  else if (category === "Household Work") {
+    yRange = [0,60];
+  }
+  else if (category === "Finances") {
+    yRange = [0,5];
+  }
+  else if (category === "Leisure") {
+    yRange = [0,90];
+  }
+  else if (category === "Community") {
+    yRange = [0,15];
+  }
+  else if (category === "Education") {
+    yRange = [0,15];
+  }
+  else if (category === "Work") {
+    yRange = [0,60];
+  }
+
+  width = 1000;
+  height = 500;
+  margins = {
+    top: 20,
+    right: 20,
+    bottom: 20,
+    left: 50
+  };
+
+  graph = d3.select('#graph').append('svg')
+    .attr('height', height + margins.bottom)
+    .attr('width', width);
+
+  // chart title
+  graph.append("text")
+    .attr("x", (width / 2))             
+    .attr("y", margins.top)
+    .attr("text-anchor", "middle")  
+    .style("font-size", "16px") 
+    .style("font-weight", "bold")
+    .text(category.replace(/#/g, ','));
+
+  years = ["2006","2007","2008","2009","2010","2011","2012","2013"];
+
+  // define scale factors
+  xScale = d3.scale.ordinal()
+    .domain(years)
+    .rangePoints([margins.left, width - margins.right]);
+  yScale = d3.scale.linear()
+    .domain(yRange)
+    .range([height - margins.top, margins.bottom]);
+
+  // define axes
+  xAxis = d3.svg.axis()
+    .scale(xScale);
+  yAxis = d3.svg.axis()
+    .scale(yScale)
+    .orient("left");
+
+  // add x-axis to graph
+  graph.append('g')
+    .attr('class','axis')
+    .attr('transform', 'translate(0,' + (height - margins.bottom) + ')')
+    .call(xAxis);
+
+  // add y-axis to graph
+  graph.append('g')
+    .attr('class','axis')
+    .attr('transform', 'translate(' + (margins.left) + ',0)')
+    .call(yAxis);
+
+  // y-axis title
+  graph.append("text")
+    .attr("y", 0 - margins.left) // x and y switched due to rotation
+    .attr("x", 0 - (height / 2))
+    // I don't exactly know what this does. It might align the text differently than its y-value
+    .attr("dy", "4em") 
+    .attr("transform", "rotate(-90)")
+    .style("text-anchor", "middle")
+    .style("font-size", "16px") 
+    .style("font-weight", "bold")
+    .text("Percentage Engagement");
+
+  // x-axis title
+  graph.append("text")
+    .attr("class", "xlabel")
+    .attr("text-anchor", "middle")
+    .style("font-size", "16px") 
+    .style("font-weight", "bold")
+    .attr("x", width / 2)
+    .attr("y", height + margins.bottom)
+    // .attr("dy", "-1em") 
+    .text("Year");
+
+  // line function
+  createLine = d3.svg.line()
+    .x(function(d) {
+      return xScale(d.year);
+    })
+    .y(function(d) {
+      return yScale(d.percent);
+    })
+    .interpolate('linear');
+
+  colors = ['#448AFF','#F44336','#FFC107','#4CAF50'];
+  // draw lines and dots
+  // for (var i; i < indexes.length; i++) {
+  indexes.forEach(function(value, i) { 
+    // convert index into int
+    value = parseInt(value, 10);
+    // assign data
+    activityData = data.Weekday[value][1];
+    // access different data if education
+    if (category === "Education") {
+      // get percent data
+      activityData = activityData[0];
+    }
+    
+    // draw line
+    graph.append('path')
+      .attr('d', createLine(activityData))
+      .attr('stroke', colors[i])
+      .attr('stroke-width', 2)
+      .attr('fill', 'none');
+
+    // group.selectAll(".line")
+    //     .data(activityData)
+    //   .enter().append("path")
+    //     .attr("class", "line")
+    //     .attr('stroke', colors[i])
+    //     .attr('stroke-width', 2)
+    //     .attr('fill', 'none')
+    //     .attr("d", createLine);
+    
+    graph.selectAll(".dot") // dots for data
+      .data(activityData)
+      .enter().append("circle")
+      .attr('class', 'datapoint data') // datapoint is general class, data is more specific one
+      .attr('cx', function(d) { return xScale(d.year); })
+      .attr('cy', function(d) { return yScale(d.percent); })
+      .attr('r', 6)
+      .attr('fill', 'white')
+      .attr('stroke', colors[i])
+      .attr('stroke-width', '2');
+
+  });
+
+
+}
+
+
+/* I'm not going to put in bar chart functionality yet; I guess for now just assume it would go underneath the line chart */
+/* Note: I might want to resize the graph to be more reasonable. Think about using vh instead. I'm not even sure if SVG can take vh */
+
 </script>
 </body>
 </html>

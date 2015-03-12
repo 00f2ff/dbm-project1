@@ -53,7 +53,8 @@ class MainHandler(BaseHandler):
 		data = self.data_passer()
 		# logging.info(data)
 		context = {'data':data}
-		self.render_response('index_old.html', **context)
+		self.render_response('index.html', **context)
+		# self.render_response('index_old.html', **context)
 
 	def data_passer(self):
 		# create data object containing all year information
@@ -81,10 +82,10 @@ class MainHandler(BaseHandler):
 				if weekend[a][0] == "Educational Activities":
 					# create arrays of all of the education data (see comment below)
 					# education of [a][1] is an array of [ [], [] ], with percent being index 0 and hours 1
-					weekend[a][1][0].append({"year":data[y][0], "percent":data[y][1][a]["Percent Engaged on Weekends and Holidays"]})
-					weekend[a][1][1].append({"year":data[y][0], "hours":data[y][1][a]["Average Hours per Weekend and Holiday"]})
-					weekday[a][1][0].append({"year":data[y][0], "percent":data[y][1][a]["Percent Engaged on Weekdays"]})
-					weekday[a][1][1].append({"year":data[y][0], "hours":data[y][1][a]["Average Hours per Weekday"]})
+					weekend[a][1][0].append({"year":data[y][0], "percent":float(data[y][1][a]["Percent Engaged on Weekends and Holidays"])})
+					weekend[a][1][1].append({"year":data[y][0], "hours":float(data[y][1][a]["Average Hours per Weekend and Holiday"])})
+					weekday[a][1][0].append({"year":data[y][0], "percent":float(data[y][1][a]["Percent Engaged on Weekdays"])})
+					weekday[a][1][1].append({"year":data[y][0], "hours":float(data[y][1][a]["Average Hours per Weekday"])})
 					# weekend[a][1][0]["year"] = data[y][0]
 					# weekend[a][1][0]["percent"] = data[y][1][a]["Percent Engaged on Weekends and Holidays"]
 					# weekend[a][1][1]["year"] = data[y][0]
@@ -106,11 +107,11 @@ class MainHandler(BaseHandler):
 					# array for the activity for the weekend = [year, engagement value for that activity]
 					# weekend[a][1]["year"] = data[y][0]
 					# weekend[a][1]["percent"] = data[y][1][a]["Percent Engaged on Weekends and Holidays"]
-					weekend[a][1].append({"year":data[y][0], "percent":data[y][1][a]["Percent Engaged on Weekends and Holidays"]})
+					weekend[a][1].append({"year":data[y][0], "percent":float(data[y][1][a]["Percent Engaged on Weekends and Holidays"])})
 					# do same for weekday
 					# weekday[a][1]["year"] = data[y][0]
 					# weekday[a][1]["percent"] = data[y][1][a]["Percent Engaged on Weekdays"]
-					weekday[a][1].append({"year":data[y][0], "percent":data[y][1][a]["Percent Engaged on Weekdays"]})
+					weekday[a][1].append({"year":data[y][0], "percent":float(data[y][1][a]["Percent Engaged on Weekdays"])})
 		return {"Weekend":weekend, "Weekday":weekday}
 
 	# Takes a name, e.g. weekend or weekday, and creates an array with all important activites in it
@@ -162,7 +163,7 @@ class MainHandler(BaseHandler):
 		k.append(j[22])
 		# Finances
 		k.append(j[24])
-		# Religion
+		# Community
 		k.append(j[56])
 		k.append(j[57])
 		# Education
@@ -176,7 +177,8 @@ class MainHandler(BaseHandler):
 
 	def post(self):
 		context = {}
-		self.render_response('index_old.html', **context)
+		self.render_response('index.html', **context)
+		# self.render_response('index_old.html', **context)
 
 app = webapp2.WSGIApplication([
     ('.*', MainHandler)
