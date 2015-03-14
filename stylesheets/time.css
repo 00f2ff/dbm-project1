@@ -66,6 +66,23 @@ body {
 	background-color: rgba(182,182,182,1);
 }
 
+.axis path,
+.axis line {
+	fill: none;
+	stroke: grey;
+	stroke-width: 2;
+	shape-rendering: crispEdges;
+}
+
+.grid .tick {
+    stroke: lightgrey;
+    stroke-opacity: 0.7;
+    shape-rendering: crispEdges;
+}
+.grid path {
+    stroke-width: 0;
+}
+
 #analysis-box {
 	margin-top: 20px;
 }

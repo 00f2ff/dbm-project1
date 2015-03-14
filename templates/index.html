@@ -9,14 +9,14 @@
 <div id="container">
   <h2>The Recession's Effect On Americans' Activity Engagement</h2>
   <div id="members">Duncan McIsaac, Yinting Luo, Jina Lee and Mo Zhang</div> <!-- Are these the names people want on the project? -->
-  <p>This project analyzes how Americans altered their schedules and behavior during The Great Recession. We used the <a target="_blank" href="https://catalog.data.gov/dataset/american-time-use-survey-54e68">American Time Use Survey</a> (ATUS) as our data source. The American Time Use Survey conducted over 148,000 interviews between 2003 and 2013 to keep track of how much time Americans fifteen years of age and older dedicated to a myriad of different activities. Click <a target="_blank" href="http://www.bls.gov/tus/atussummary.pdf">here</a> to read more about ATUS. </p>
+  <p>This project analyzes how Americans altered their weekday schedules and behavior during The Great Recession. We used the <a target="_blank" href="https://catalog.data.gov/dataset/american-time-use-survey-54e68">American Time Use Survey</a> (ATUS) as our data source. The American Time Use Survey conducted over 148,000 interviews between 2003 and 2013 to keep track of how much time Americans fifteen years of age and older dedicated to a myriad of different activities. Click <a target="_blank" href="http://www.bls.gov/tus/atussummary.pdf">here</a> to read more about ATUS. </p>
   <span>Use the navigation below to explore our significant findings.</span>
   <div id="graph-container">
     <div id="graph-nav">
       <!-- JS: .click will analyze the data-index of $(this), split it on , and turn it into numbers, and call graphing function accordingly. It could also take $(this).html() for the chart title -->
       <div class="graph-input selected" data-index="0,1">Personal Activities</div>
       <div class="graph-input" data-index="2">Leisure</div>
-      <div class="graph-input" data-index="3,4,5,6">Household Work</div>
+      <div class="graph-input" data-index="3,4,5,6">Household Work</div> <!-- blue red yellow green -->
       <div class="graph-input" data-index="7">Finances</div>
       <div class="graph-input" data-index="8,9">Community</div>
       <div class="graph-input" data-index="10">Education</div>
@@ -56,6 +56,7 @@ analyses = {
 // Add default analysis text
 $('#analysis-box').html(analyses["Personal Activities"]);
 
+// Graph navigation
 $('.graph-input').click(function() {
   // reset all elements and set this one to selected
   $('.graph-input').removeClass('selected');
@@ -71,6 +72,12 @@ $('.graph-input').click(function() {
   drawActivities(category, indexes);
 
 });
+
+// line hover handler (for now, just dots)
+// $('.dot').on('hover',function() {
+//   $(this).attr('fill',$(this).attr('stroke')); // doesn't work, probably because there are no dots yet
+// });
+
 // drawActivities("Household Work",["3","4","5","6"]);
 drawActivities("Personal Activities",["0","1"]);
 function drawActivities(category, indexes) {
@@ -101,7 +108,8 @@ function drawActivities(category, indexes) {
     yRange = [0,60];
   }
 
-  width = 1000;
+  width = 1320;
+  // width = 1000;
   height = 500;
   margins = {
     top: 20,
@@ -111,13 +119,17 @@ function drawActivities(category, indexes) {
   };
 
   graph = d3.select('#graph').append('svg')
+    // .style('margin-left',-margins.left*1.9) // prevents activity name cutoff
+    // ^ use if on a 1366x screen 
     .attr('height', height + margins.bottom)
     .attr('width', width);
+
+  width -= 320; // save room for labels
 
   // chart title
   graph.append("text")
     .attr("x", (width / 2))             
-    .attr("y", margins.top)
+    .attr("y", margins.top/1.5)
     .attr("text-anchor", "middle")  
     .style("font-size", "16px") 
     .style("font-weight", "bold")
@@ -136,9 +148,23 @@ function drawActivities(category, indexes) {
   // define axes
   xAxis = d3.svg.axis()
     .scale(xScale);
+    // .tickSize(2);
+    // .ticks(8);
   yAxis = d3.svg.axis()
     .scale(yScale)
+    // .tickSize(2)
+    // .ticks(2)
     .orient("left");
+
+  function make_xaxis() {
+    return d3.svg.axis()
+            .scale(xScale);
+  }
+  function make_yaxis() {
+    return d3.svg.axis()
+            .scale(yScale)
+            .orient("left");
+  }
 
   // add x-axis to graph
   graph.append('g')
@@ -171,9 +197,27 @@ function drawActivities(category, indexes) {
     .style("font-size", "16px") 
     .style("font-weight", "bold")
     .attr("x", width / 2)
-    .attr("y", height + margins.bottom)
+    .attr("y", height + margins.bottom/1.9) // prevents cutoff
     // .attr("dy", "-1em") 
     .text("Year");
+
+  // Draw the x Grid lines
+  graph.append("g")
+    .attr("class", "grid")
+    .attr("transform", "translate(0," + height + ")")
+    .call(make_xaxis()
+      .tickSize(-(height-margins.top), 0, 0)
+      .tickFormat("")
+    );
+
+  // Draw the y Grid lines
+  graph.append("g")            
+    .attr("class", "grid")
+    .attr("transform", "translate("+margins.left+",0)")
+    .call(make_yaxis()
+      .tickSize(-(width-margins.left-margins.right), 0, 0)
+      .tickFormat("")
+    );
 
   // line function
   createLine = d3.svg.line()
@@ -185,7 +229,7 @@ function drawActivities(category, indexes) {
     })
     .interpolate('linear');
 
-  colors = ['#448AFF','#F44336','#FFC107','#4CAF50'];
+  colors = ['#448AFF','#F44336','#FFC107','#4CAF50']; // blue, red, yellow, green
   // draw lines and dots
   // for (var i; i < indexes.length; i++) {
   indexes.forEach(function(value, i) { 
@@ -198,22 +242,13 @@ function drawActivities(category, indexes) {
       // get percent data
       activityData = activityData[0];
     }
-    
+
     // draw line
     graph.append('path')
       .attr('d', createLine(activityData))
       .attr('stroke', colors[i])
       .attr('stroke-width', 2)
       .attr('fill', 'none');
-
-    // group.selectAll(".line")
-    //     .data(activityData)
-    //   .enter().append("path")
-    //     .attr("class", "line")
-    //     .attr('stroke', colors[i])
-    //     .attr('stroke-width', 2)
-    //     .attr('fill', 'none')
-    //     .attr("d", createLine);
     
     graph.selectAll(".dot") // dots for data
       .data(activityData)
@@ -225,6 +260,15 @@ function drawActivities(category, indexes) {
       .attr('fill', 'white')
       .attr('stroke', colors[i])
       .attr('stroke-width', '2');
+
+    // label
+    graph.append("text")
+      .attr("transform", "translate(" + (width+3) + "," + yScale(activityData[activityData.length-1].percent) + ")")
+      // .attr("dy", ".35em")
+      .attr("dx", "-.4em")
+      .attr("text-anchor", "start")
+      .style("fill", colors[i])
+      .text(data.Weekday[value][0]);
 
   });
 
