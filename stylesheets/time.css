@@ -83,8 +83,23 @@ body {
     stroke-width: 0;
 }
 
+.tooltip {
+    background: none repeat scroll 0 0; /*#ed1e79;*/
+    border: 0 solid #ffffff;
+    border-radius: 8px;
+    color: #ffffff;
+    font: 12px sans-serif;   
+    height: 80px;
+    padding: 2px;
+    pointer-events: none;
+    position: absolute;
+    text-align: center;
+    width: 200px;
+}
+
 #analysis-box {
-	margin-top: 20px;
+	margin: 20px 0px;
+	/*float: left;*/
 }
 
 .analysis {

@@ -45,13 +45,13 @@ var data, analyses;
 
 data = {{data|safe}}
 analyses = {
-  "Personal Activities": "This is about personal activities",
-  "Leisure": "This is about leisure",
-  "Household Work": "This is about household work",
-  "Finances": "This is about finances",
-  "Community": "This is about community",
-  "Education": "This is about education",
-  "Work": "This is about work"
+  "Personal Activities": "We can see that there was a marked increase in the percentage of Americans who turned to self-care in regards to health in 2008. It’s possible this resulted from a decrease in wages and/or loss of business-provided health insurance. We can also see that more Americans engaged in personal activities. After having their hours cut or losing their jobs, more Americans may have decided to focus on self-improvement before returning to work.",
+  "Leisure": "Although the percentage of Americans who watched TV increased slightly in 2008 and 2009, it dropped off in 2010 and 2011, which may indicate more American began to find jobs, leading to less leisure time. The increase in TV-watching may also be attributed to Americans seeking lower-cost leisure activities.",
+  "Household Work": "Percent engagement in food preparation increased in 2008 and more dramatically in 2009. It’s possible that Americans had fewer dollars to spend and thus ate out less than before the Recession. Understandably, the percentage of Americans who shopped for groceries increased during this time as well. Both percentage of Americans paying attention to pets as well as their travel related to household activities increased from 2007 to 2008. As more Americans became unemployed, they may have seeked out additional uses for their time.",
+  "Finances": "2008 saw the beginning of a large fall in percentage of Americans who seeked out financial services. There are a multitude of factors which may have influenced this decline, but some potential culprits could be the rise of online banking as well as a general distrust of financial services after the housing bubble burst.",
+  "Community": "The effects of the Recession on engagement in organizational, civic, religious and spiritual activities are interesting. It appears engagement rose in 2008 before falling in 2009, rebounding in 2010, and falling more dramatically in 2011. It’s possible that these changes reflected Americans’ need for community in difficult times, but once the Recession appeared to subside, many Americans decided they didn’t need the greater sense of community they shared previously.",
+  "Education": "In 2008 we saw the beginning of a trend of more engagement in education. As more Americans lost their jobs, they may have decided to return to school before attempting to enter the job market once again. Since participants ages 15 and older were surveyed for this data, another possible reason for the uptick in education engagement is that more young Americans saw the job market in 2008 as hostile and decided to go to college instead of entering the market directly out of high school.",
+  "Work": "We see that 2008 marked the beginning of a decline in engagement in working and work-related activities as well as travel related to work. Increased unemployment could explain the decline in percentage of Americans working. As employers lost money, they may have not been able to send employees on as many business trips. This in combination with increased unemployment may have resulted in the decline in engagement for travel related to work. We can also see that there was a substantial increase in the percentage of Americans searching for jobs and interviewing. Increased unemployment could explain this upswing as well, since many Americans were eager to return to work."
 }
 // Add default analysis text
 $('#analysis-box').html(analyses["Personal Activities"]);
@@ -117,6 +117,10 @@ function drawActivities(category, indexes) {
     bottom: 20,
     left: 50
   };
+
+  var tooltip = d3.select('#graph').append("div") // declare the properties for the div used for the tooltips
+    .attr("class", "tooltip")       // apply the 'tooltip' class
+    .style("opacity", 0); 
 
   graph = d3.select('#graph').append('svg')
     // .style('margin-left',-margins.left*1.9) // prevents activity name cutoff
@@ -259,7 +263,30 @@ function drawActivities(category, indexes) {
       .attr('r', 6)
       .attr('fill', 'white')
       .attr('stroke', colors[i])
-      .attr('stroke-width', '2');
+      .attr('stroke-width', '2')
+      .on("mouseover", function(d) {
+        // make the color of the tooltip the stroke color
+        tooltip.style("background-color",colors[i]);
+        // fill in the dot
+        $(this).attr('fill', colors[i]);
+       // when the mouse goes over a circle, do the following
+        tooltip.transition()                  // declare the transition properties to bring fade-in div
+          .duration(200)                  // it shall take 200ms
+          .style("opacity", .9);              // and go all the way to an opacity of .9
+        tooltip.html( "<br/><p>" + d.percent + 
+                      "% of Americans surveyed engaged in " + data.Weekday[value][0] + " in " + 
+                      + d.year+"</p>")  // add the text of the tooltip as html 
+          .style("left", (d3.event.pageX) + "px")     // move it in the x direction 
+          .style("top", (d3.event.pageY - 28) + "px");  // move it in the y direction
+      })   
+      .on("mouseout", function(d) {
+        // when the mouse leaves a circle, do the following
+        // make the dot white again
+        $(this).attr('fill', 'white'); // transition doesn't work well here
+        tooltip.transition()                  // declare the transition properties to fade-out the div
+          .duration(500)                  // it shall take 500ms
+          .style("opacity", 0);             // and go all the way to an opacity of nil
+       }); 
 
     // label
     graph.append("text")
