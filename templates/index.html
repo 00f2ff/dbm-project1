@@ -10,7 +10,7 @@
   <h2>The Recession's Effect On Americans' Activity Engagement</h2>
   <div id="members">Duncan McIsaac, Yinting Luo, Jina Lee and Mo Zhang</div> <!-- Are these the names people want on the project? -->
   <p>This project analyzes how Americans altered their weekday schedules and behavior during The Great Recession. We used the <a target="_blank" href="https://catalog.data.gov/dataset/american-time-use-survey-54e68">American Time Use Survey</a> (ATUS) as our data source. The American Time Use Survey conducted over 148,000 interviews between 2003 and 2013 to keep track of how much time Americans fifteen years of age and older dedicated to a myriad of different activities. Click <a target="_blank" href="http://www.bls.gov/tus/atussummary.pdf">here</a> to read more about ATUS. </p>
-  <span>Use the navigation below to explore our significant findings.</span>
+  <span>After graphing the weekday percent engagement for all activities, we separated significant findings into seven categories. Use the navigation below to explore those findings.</span>
   <div id="graph-container">
     <div id="graph-nav">
       <!-- JS: .click will analyze the data-index of $(this), split it on , and turn it into numbers, and call graphing function accordingly. It could also take $(this).html() for the chart title -->
@@ -192,7 +192,7 @@ function drawActivities(category, indexes) {
     .style("text-anchor", "middle")
     .style("font-size", "16px") 
     .style("font-weight", "bold")
-    .text("Percentage Engagement");
+    .text("Weekday Percentage Engagement");
 
   // x-axis title
   graph.append("text")

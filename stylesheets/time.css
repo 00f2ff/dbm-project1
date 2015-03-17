@@ -18,23 +18,6 @@ body {
 	font-size: 1.1em;
 }
 
-#graph-container {
-	/*margin-top: 2%;*/
-	
-}
-
-#graph-nav {
-	margin: 2% auto;
-}
-
-/*table {
-	margin: 2% auto;
-}
-
-.label {
-	padding-right: 2%;
-}*/
-
 #graph-nav {  
 	display: -webkit-box;
 	display: -moz-box;
@@ -44,6 +27,12 @@ body {
 
 	-webkit-flex-flow: row wrap; /* flex-direction flex-wrap */
 	justify-content: space-around; /* how remaining space is distributed */
+
+	margin: 2% auto;
+}
+
+#graph {
+	margin: 0 auto;
 }
 
 .graph-input {
